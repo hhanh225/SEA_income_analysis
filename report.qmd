@@ -1,0 +1,39 @@
+---
+title: "Are Southeast Asian countries catching up? Income Convergence with the UK, from 2000 to 2022"
+author: "Hong Hanh Nguyen"
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute: 
+  echo: false
+  warning: false
+  message: false
+editor: visual
+---
+```{r}
+#| label: setup
+library(tidyverse)
+library(readxl)
+source("R/1_data_import.R")
+```
+
+## Business Understanding
+
+
+## Data Understanding
+
+
+## Data Preparation
+
+
+## Modelling and Analysis
+
+
+## Evaluation
+
+
+## Deployment and Communication
+
+
+
