@@ -7,7 +7,7 @@ benchmark_code = "GBR"
 study_countries = c(sea_codes, east_asia_codes, benchmark_code) 
 study_data = raw_maddison |> filter(countrycode %in% study_countries, year >= 2000 & year <= 2022)
 
-# Create analysis data, assign each country and year to defined groups and periods and remove the region column since it does not show exactly the defined group of countries in the project
+# Create analysis data, assign each country and year to defined groups and periods and remove the region column because it does not show exactly the defined group of countries in the project
 analysis_data = study_data |>
   mutate(group = case_when(
     countrycode %in% sea_codes ~ "Southeast Asia",
@@ -25,6 +25,20 @@ analysis_data = study_data |>
   mutate(annual_growth_rate = (gdppc / lag(gdppc) - 1) * 100) |>
   ungroup() |>
   select(-region)
+
+# Create a new separate table for the UK benchmark to compare each economy’s GDP per capita with the UK’s in the same year
+uk_benchmark = analysis_data |> 
+  filter(countrycode == benchmark_code) |> 
+  rename(uk_gdppc = gdppc) |> 
+  select(year, uk_gdppc)
+# Left join 2 tables: analysis_data and uk_benchmark with key value: year to keep every row of the main data and calculate new column relative_income and absolute_gap
+analysis_data = analysis_data |>   
+  left_join(uk_benchmark, by = "year") |> 
+  mutate(relative_income = gdppc / uk_gdppc,
+         absolute_gap = uk_gdppc - gdppc)
+# Remove the UK rows because the UK is the benchmark, not part of the comparison groups
+compare_data = analysis_data |> 
+  filter(countrycode != benchmark_code)
 
 
 
