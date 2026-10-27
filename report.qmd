@@ -18,6 +18,7 @@ editor: visual
 library(tidyverse)
 library(readxl)
 source("R/1_data_import.R")
+source("R/2_data_process.R")
 ```
 
 ## Business Understanding
@@ -32,7 +33,8 @@ The intended stakeholders are Vietnamese economic policy analysts who need evide
 
 ### Research questions
 
-There is one main research question and three sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to my home country, Vietnam: **Main question**:
+There is one main research question and three sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to my home country, Vietnam: 
+**Main question**:
 
 - From 2000 to 2022, did SEA countries close their income gap with the UK faster or slower than East Asian countries?
 
@@ -48,7 +50,7 @@ A simple convergence test examines whether poorer economies grew faster than ric
 
 ### Scope
 
-The project’s scope covers **nine Southeast Asian Countries** (Indonesia, Cambodia, Laos, Myanmar, Malaysia, Philippines, Singapore, Thailand, Vietnam), **six East Asian Economies** (China, Hong Kong, Japan, South Korea, North Korea, Taiwan) and the **benchmark: United Kingdom**. The study period is from 2000 to 2022 (the latest year available), divided into three sub-periods, each defined by a major global economic event: 2000–2007 (pre-crisis), 2008–2019 (post-global financial crisis to recovery) and 2020–2022 (COVID).
+The project’s scope covers **nine Southeast Asian Countries** (Indonesia, Cambodia, Laos, Myanmar, Malaysia, Philippines, Singapore, Thailand, Vietnam), **six East Asian Economies** (China, Hong Kong, Japan, South Korea, North Korea, Taiwan) and the **benchmark: United Kingdom**. The study period is from 2000 to 2022 (the latest year available), divided into three sub-periods, each defined by a major global economic event: 2000–2007 (pre-crisis), 2008–2019 (global financial crisis (GFC) to recovery) and 2020–2022 (COVID).
 
 ### Success criteria
 
@@ -72,16 +74,6 @@ The main constraints are as follows: the dataset ends in 2022, so the COVID reco
 
 “The Maddison Project Database provides information on comparative economic growth and income levels over the very long run, which is presented and discussed in Bolt and Van Zanden (2024), "Maddison style estimates of the evolution of the world economy: A new 2023 update", Journal of Economic Surveys, 1–41”. The project mainly uses the sheet “Full data” in Maddison Project Database 2023 because it contains full data for analyzing annual country-level data, while the other sheets are introduction, notes and regional summaries. This sheet includes `r format(nrow(raw_maddison), big.mark = ",")` rows covering `r n_distinct(raw_maddison$country)` countries from `r min(raw_maddison$year)` to `r max(raw_maddison$year)`.
 
-```{r}
-#| label: define-groups
-# Define groups by country code, because Maddison's region column merges Southeast Asia with South Asia 
-sea_codes = c("IDN", "KHM", "LAO", "MMR", "MYS", "PHL", "SGP", "THA", "VNM")
-east_asia_codes = c("CHN", "HKG", "JPN", "KOR", "PRK", "TWN")
-benchmark_code = "GBR"
-study_countries = c(sea_codes, east_asia_codes, benchmark_code) 
-study_data = raw_maddison |> filter(countrycode %in% study_countries, year >= 2000 & year <= 2022)
-```
-
 ### Variables
 
 - GDPpc: Real GDP per capita in 2011 international dollars (PPP) (specified in sheet Notes of Maddison Project Database (MPD) 2023) (Bolt and van Zanden, 2024)
@@ -95,7 +87,7 @@ summarise(min_gdppc = min(gdppc), median_gdppc = median(gdppc), max_gdppc = max(
 knitr::kable(digits = 0) 
 ```
 
-- There are no zero or negative values in 2 variables of study data, which is plausible.
+- There are no zero, negative, NA values in 2 variables of study data, which is plausible.
 
 ### Exploration
 
@@ -157,7 +149,7 @@ geom_line() +
 geom_point()
 ```
 
--> Laos witnessed a smooth upward trend with 2007 just slightly steeper. By contrast, Myanmar’s GDP per capita rose significantly from 2003 to 2007 and then growth slowed from 2007 to 2020, finally dropping down considerably from 2020 to 2021 due to the 2021 military coup and COVID-19.
+-> Laos witnessed a smooth upward trend from 2000 to 2006, then suddenly dropped in 2006 then recovered greatly on 2007. By contrast, Myanmar’s GDP per capita rose significantly from 2003 to 2007 and then growth slowed from 2007 to 2020, finally dropping down considerably from 2020 to 2021 due to the 2021 military coup and COVID-19.
 
 ### Data quality issues
 | Issue | Effect on analysis | Handling |
@@ -181,7 +173,19 @@ geom_point()
 
 - A small number of economies (16) limits statistical testing.
 
-## Data Preparation
+## Data Processing
+1. Import the “Full data” sheet from the raw database because it has annual country-level data, while the other sheets are introduction, notes and sum of regional data
+
+2. Filter 16 economies and years from 2000 to 2022, which match the research focus
+
+3. Assign each country to corresponding groups including Southeast Asia; East Asia; Benchmark, and groups are defined by country code, assign each year to corresponding periods including 2000-2007 Pre-crisis; 2008-2019 GFC and recovery; 2020-2022 COVID. These groups and periods are organised in logical orders to analyze clearly in later tables and charts. Then remove the region column because it does not show exactly the defined group of economies in the project, such as SEA in raw database is in region South and South East Asia
+
+4. Calculate annual growth rate by ((GDP per capita in year 2 minus GDP per capita in year 1) divided by GDP per capita in year 1) multiply by 100 to see clearly the growth trend of each country per year and compare them with the benchmark to answer the research questions, but 2000 has no growth value, so it returns NA and growth series start in 2001.
+
+5. Create and join the table of UK benchmark with main table to keep every row of the main data and then calculate new column relative income by taking each other country’s GDP per capita divide UK’s GDP per capita in the same year and new column absolute gap by taking UK’s GDP per capita minus each country’s GDP per capita in the same year
+
+6. Create a new table and separate the comparison data from the benchmark by removing the UK rows because the UK is the benchmark, its relative income is always 1, and it is not part of the comparison groups, so it would affect the group averages when analyzing
+
 
 ## Modelling and Analysis
 

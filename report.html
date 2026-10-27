@@ -2190,7 +2190,7 @@ vertical-align: -.125em;
   <li><a href="#data-quality-issues" id="toc-data-quality-issues" class="nav-link" data-scroll-target="#data-quality-issues"><span class="header-section-number">2.4</span> Data quality issues</a></li>
   <li><a href="#gaps-and-limitations" id="toc-gaps-and-limitations" class="nav-link" data-scroll-target="#gaps-and-limitations"><span class="header-section-number">2.5</span> Gaps and limitations</a></li>
   </ul></li>
-  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation"><span class="header-section-number">3</span> Data Preparation</a></li>
+  <li><a href="#data-processing" id="toc-data-processing" class="nav-link" data-scroll-target="#data-processing"><span class="header-section-number">3</span> Data Processing</a></li>
   <li><a href="#modelling-and-analysis" id="toc-modelling-and-analysis" class="nav-link" data-scroll-target="#modelling-and-analysis"><span class="header-section-number">4</span> Modelling and Analysis</a></li>
   <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">5</span> Evaluation</a></li>
   <li><a href="#deployment-and-communication" id="toc-deployment-and-communication" class="nav-link" data-scroll-target="#deployment-and-communication"><span class="header-section-number">6</span> Deployment and Communication</a></li>
@@ -2250,7 +2250,7 @@ vertical-align: -.125em;
 </section>
 <section id="scope" class="level3" data-number="1.4">
 <h3 data-number="1.4" class="anchored" data-anchor-id="scope"><span class="header-section-number">1.4</span> Scope</h3>
-<p>The project’s scope covers <strong>nine Southeast Asian Countries</strong> (Indonesia, Cambodia, Laos, Myanmar, Malaysia, Philippines, Singapore, Thailand, Vietnam), <strong>six East Asian Economies</strong> (China, Hong Kong, Japan, South Korea, North Korea, Taiwan) and the <strong>benchmark: United Kingdom</strong>. The study period is from 2000 to 2022 (the latest year available), divided into three sub-periods, each defined by a major global economic event: 2000–2007 (pre-crisis), 2008–2019 (post-global financial crisis to recovery) and 2020–2022 (COVID).</p>
+<p>The project’s scope covers <strong>nine Southeast Asian Countries</strong> (Indonesia, Cambodia, Laos, Myanmar, Malaysia, Philippines, Singapore, Thailand, Vietnam), <strong>six East Asian Economies</strong> (China, Hong Kong, Japan, South Korea, North Korea, Taiwan) and the <strong>benchmark: United Kingdom</strong>. The study period is from 2000 to 2022 (the latest year available), divided into three sub-periods, each defined by a major global economic event: 2000–2007 (pre-crisis), 2008–2019 (global financial crisis (GFC) to recovery) and 2020–2022 (COVID).</p>
 </section>
 <section id="success-criteria" class="level3" data-number="1.5">
 <h3 data-number="1.5" class="anchored" data-anchor-id="success-criteria"><span class="header-section-number">1.5</span> Success criteria</h3>
@@ -2315,7 +2315,7 @@ Table 1
 </div>
 </div>
 <ul>
-<li>There are no zero or negative values in 2 variables of study data, which is plausible.</li>
+<li>There are no zero, negative, NA values in 2 variables of study data, which is plausible.</li>
 </ul>
 </section>
 <section id="exploration" class="level3" data-number="2.3">
@@ -2543,7 +2543,7 @@ Figure 2: Laos and Myanmar year-on-year changes in GDP per capita, 2001–2022
 </div>
 </div>
 </div>
-<p>-&gt; Laos witnessed a smooth upward trend with 2007 just slightly steeper. By contrast, Myanmar’s GDP per capita rose significantly from 2003 to 2007 and then growth slowed from 2007 to 2020, finally dropping down considerably from 2020 to 2021 due to the 2021 military coup and COVID-19.</p>
+<p>-&gt; Laos witnessed a smooth upward trend from 2000 to 2006, then suddenly dropped in 2006 then recovered greatly on 2007. By contrast, Myanmar’s GDP per capita rose significantly from 2003 to 2007 and then growth slowed from 2007 to 2020, finally dropping down considerably from 2020 to 2021 due to the 2021 military coup and COVID-19.</p>
 </section>
 <section id="data-quality-issues" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="data-quality-issues"><span class="header-section-number">2.4</span> Data quality issues</h3>
@@ -2605,8 +2605,16 @@ Figure 2: Laos and Myanmar year-on-year changes in GDP per capita, 2001–2022
 </ul>
 </section>
 </section>
-<section id="data-preparation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="data-preparation"><span class="header-section-number">3</span> Data Preparation</h2>
+<section id="data-processing" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="data-processing"><span class="header-section-number">3</span> Data Processing</h2>
+<ol type="1">
+<li><p>Import the “Full data” sheet from the raw database because it has annual country-level data, while the other sheets are introduction, notes and sum of regional data</p></li>
+<li><p>Filter 16 economies and years from 2000 to 2022, which match the research focus</p></li>
+<li><p>Assign each country to corresponding groups including Southeast Asia; East Asia; Benchmark, and groups are defined by country code, assign each year to corresponding periods including 2000-2007 Pre-crisis; 2008-2019 GFC and recovery; 2020-2022 COVID. These groups and periods are organised in logical orders to analyze clearly in later tables and charts. Then remove the region column because it does not show exactly the defined group of economies in the project, such as SEA in raw database is in region South and South East Asia</p></li>
+<li><p>Calculate annual growth rate by ((GDP per capita in year 2 minus GDP per capita in year 1) divided by GDP per capita in year 1) multiply by 100 to see clearly the growth trend of each country per year and compare them with the benchmark to answer the research questions, but 2000 has no growth value, so it returns NA and growth series start in 2001.</p></li>
+<li><p>Create and join the table of UK benchmark with main table to keep every row of the main data and then calculate new column relative income by taking each other country’s GDP per capita divide UK’s GDP per capita in the same year and new column absolute gap by taking UK’s GDP per capita minus each country’s GDP per capita in the same year</p></li>
+<li><p>Create a new table and separate the comparison data from the benchmark by removing the UK rows because the UK is the benchmark, its relative income is always 1, and it is not part of the comparison groups, so it would affect the group averages when analyzing</p></li>
+</ol>
 </section>
 <section id="modelling-and-analysis" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="modelling-and-analysis"><span class="header-section-number">4</span> Modelling and Analysis</h2>
