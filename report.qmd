@@ -116,7 +116,9 @@ select(group, countrycode, country)|>
 knitr::kable(digits = 1) 
 ```
 
-The analysis includes `r length(sea_codes)` Southeast Asian economies, missing Brunei and Timor-Leste; `r length(east_asia_codes)` East Asia economies, missing Mongolia, Macau. These economies were absent because territories like Macau or Brunei have small populations and economies overwhelmingly dependent on a single dominant sector Oil and gas in Brunei, tourism and gaming in Macau). Economic historians have historically prioritized larger or more diversified national economies for long-term reconstruction. Small or newly established territories (such as Timor-Leste gaining independence from Indonesia in 2002) lack national accounts continuously recorded over a long historical horizon. Therefore, there are complete data of `r length(study_countries)` observed countries in `r n_distinct(study_data$year)` years (from 2000 to 2022), no missing value found in variable GDPpc and population:
+The analysis includes `r length(sea_codes)` Southeast Asian economies, missing Brunei and Timor-Leste; `r length(east_asia_codes)` East Asia economies, missing Mongolia, Macau. These economies were absent because territories like Macau or Brunei have small populations and economies overwhelmingly dependent on a single dominant sector (e.g., oil and gas in Brunei, tourism and gaming in Macau). According to the Maddison paper, economic historians have historically prioritized larger or more diversified national economies for long-term reconstruction. Small or newly established territories (such as Timor-Leste gaining independence from Indonesia in 2002) lack national accounts continuously recorded over a long historical horizon. 
+
+There are complete data of `r length(study_countries)` observed countries in `r n_distinct(study_data$year)` years (from 2000 to 2022), no missing value found in variable GDPpc and population:
 
 Figure: GDP per capita over time:
 
@@ -160,12 +162,12 @@ geom_point()
 ### Data quality issues
 | Issue | Effect on analysis | Handling |
 |---|---|---| 
-|The region column merges South and Southeast Asia | Cannot use region to define SEA | Using country codes instead |
-| Missing economies: Brunei and Timor-Leste (SEA); Mongolia and Macau (East Asia) | SEA = 9 of 11 ASEAN members. They are small economies, so the effect on group averages is small, but the groups are not complete | State the group object definitions clearly: 9 Southeast Asian Countries |
-|Estimates have error margins, especially for low-income (Bolt & van Zanden, 2024) | Single-country results for Myanmar, Laos and North Korea are less reliable | Treat their individual results cautiously |
-|Myanmar’s official growth for 2003–06 was likely inflated (Myint, 2006) | Overstates SEA growth in 2000–2007. Myanmar is also a poor, fast-growing case, so it may exaggerate the convergence slope|Robustness check: re-run the main results without Myanmar |
-|Different scales: GDP per capita 1,600 to 80,000; population 4 million to 1.4 billion | Raw-value charts squash poorer countries; a weighted average would be dominated by China | Use ratios and log scales |
-|Genuine shocks (GFC 2008–09, COVID 2020, Myanmar 2021) | Real, not errors, but they strongly affect sub-period averages. The 2020–22 period has only 3 years, so its average is sensitive | Keep them; interpret 2020–22 averages cautiously |
+|The region column merges South and Southeast Asia | Cannot use region column to define SEA | Using country codes instead |
+| Missing economies: Brunei and Timor-Leste (SEA); Mongolia and Macau (East Asia) | They are small economies with negligible effect on group averages, but the groups are not complete | Restate the group object definitions clearly: `r length(sea_codes)` Southeast Asian Countries; `r length(east_asia_codes)` East Asian Economies|
+|Estimates have error margins, especially for low-income (Bolt & van Zanden, 2024) | Single-country results for Myanmar, Laos and North Korea (poor and closed economy) are less reliable | Analyze their individual results cautiously |
+|Myanmar’s official growth for 2003–06 was likely inflated (Myint, 2006) | Overstates SEA growth in 2000–2007. Myanmar is a poor, fast-growing case, so it may exaggerate the convergence slope|Robustness check: re-run the main results without Myanmar |
+|Different scales: GDP per capita `r format(round(min(study_data$gdppc)), big.mark = ",")` (2011 international dollars, PPP) to `r format(round(max(study_data$gdppc)), big.mark = ",")` (2011 international dollars, PPP); population `r round((min(study_data$pop)/1000),0)` million to `r format(round((max(study_data$pop)/1000)), big.mark = ",")` million | Huge difference of data between economies; a population-weighted average would be dominated by China | Use ratios and log scales |
+|Genuine shocks (Global finance crisis: 2008-2009, COVID 2020, Myanmar 2021) | These events strongly affect sub-period averages. The 2020–2022 period has only 3 years, so its average is sensitive | Keep the data and interpret 2020–2022 averages cautiously |
 
 ### Gaps and limitations
 
