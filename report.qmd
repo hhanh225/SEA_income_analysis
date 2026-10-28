@@ -19,21 +19,22 @@ library(tidyverse)
 library(readxl)
 source("R/1_data_import.R")
 source("R/2_data_process.R")
+source("R/3_data_analysis.R")
 ```
 
 ## Business Understanding
 
 ### Background and context
 
-Since 2000, Southeast Asia (SEA) has grown rapidly and become one of the most dynamic regions of the 21st century. However, fast growth does not necessarily mean that these economies have closed their income gap with, or caught up with, developed economies. This project analyses economic growth and relative income across selected economies over 2000–2022, focusing on Southeast Asia, which includes my home country, Vietnam. This focus reflects my background and my interest in contributing to my region’s development. Moreover, this project compare SEA’s economic growth with East Asia because it is the classic example of successful catch-up such as: Japan, then Korea and Taiwan, then China moved from low to high or middle income within a few decades. Throughout the analysis, I take the United Kingdom as the benchmark to see whether SEA’s growth has substantially narrowed the gap with a mature, stable, high-income economy. I considered the US, which is the usual benchmark for the richest economy but I want to compare it with another economy with lower but stable growth, representing a typical mature economy rather than the frontier.
+Since 2000, Southeast Asia (SEA) has grown rapidly and become one of the most dynamic regions of the 21st century. However, fast growth does not necessarily mean that these economies have closed their income gap with, or caught up with, developed economies. This project analyses economic growth and relative income across selected economies over 2000–2022, focusing on Southeast Asia, which includes my home country, Viet Nam. This focus reflects my background and my interest in contributing to my region’s development. Moreover, this project compare SEA’s economic growth with East Asia because it is the classic example of successful catch-up such as: Japan, then Korea and Taiwan, then China moved from low to high or middle income within a few decades. Throughout the analysis, I take the United Kingdom as the benchmark to see whether SEA’s growth has substantially narrowed the gap with a mature, stable, high-income economy. I considered the US, which is the usual benchmark for the richest economy but I want to compare it with another economy with lower but stable growth, representing a typical mature economy rather than the frontier.
 
 ### Stakeholder
 
-The intended stakeholders are Vietnamese economic policy analysts who need evidence on Vietnam's position compared with its regional peers and a developed benchmark, to monitor whether catch-up is happening and to brief decision-makers. Vietnam has an official goal of becoming a high-income country by 2045, so evidence on whether the gap is closing is directly relevant (World Bank, 2025). However, this project does not recommend specific policies, because the data contains only GDP per capita and population and therefore cannot identify the causes of growth.
+The intended stakeholders are Vietnamese economic policy analysts who need evidence on Viet Nam's position compared with its regional peers and a developed benchmark, to monitor whether catch-up is happening and to brief decision-makers. Viet Nam has an official goal of becoming a high-income country by 2045, so evidence on whether the gap is closing is directly relevant (World Bank, 2025). However, this project does not recommend specific policies, because the data contains only GDP per capita and population and therefore cannot identify the causes of growth.
 
 ### Research questions
 
-There is one main research question and three sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to my home country, Vietnam: 
+There is one main research question and three sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to my home country, Viet Nam: 
 **Main question**:
 
 - From 2000 to 2022, did SEA countries close their income gap with the UK faster or slower than East Asian countries?
@@ -42,15 +43,15 @@ There is one main research question and three sub-questions in this project. The
 
 - Did the COVID-19 shock (especially in 2020) interrupt the catch-up trend, and was the shock larger in SEA or East Asia?
 
-- Is Vietnam closing its income gap with the UK, both in relative terms (Vietnam's GDP per capita as a share of the UK's) and in absolute terms (the difference in 2011 international dollars (PPP) per person)?
+- Is Viet Nam closing its income gap with the UK, both in relative terms (Viet Nam's GDP per capita as a share of the UK's) and in absolute terms (the difference in 2011 international dollars (PPP) per person)?
 
-- If Vietnam’s growth advantage over the UK during 2000–2019 continued, roughly when would Vietnam reach Thailand’s 2022 relative income level? since it is ahead of Vietnam but within reach
+- If Viet Nam’s growth advantage over the UK during 2000–2019 continued, roughly when would Viet Nam reach Thailand’s 2022 relative income level? since it is ahead of Viet Nam but within reach
 
 A simple convergence test examines whether poorer economies grew faster than richer ones.
 
 ### Scope
 
-The project’s scope covers **nine Southeast Asian Countries** (Indonesia, Cambodia, Laos, Myanmar, Malaysia, Philippines, Singapore, Thailand, Vietnam), **six East Asian Economies** (China, Hong Kong, Japan, South Korea, North Korea, Taiwan) and the **benchmark: United Kingdom**. The study period is from 2000 to 2022 (the latest year available), divided into three sub-periods, each defined by a major global economic event: 2000–2007 (pre-crisis), 2008–2019 (global financial crisis (GFC) to recovery) and 2020–2022 (COVID).
+The project’s scope covers **nine Southeast Asian Countries** (Indonesia, Cambodia, Laos, Myanmar, Malaysia, Philippines, Singapore, Thailand, Viet Nam), **six East Asian Economies** (China, Hong Kong, Japan, South Korea, North Korea, Taiwan) and the **benchmark: United Kingdom**. The study period is from 2000 to 2022 (the latest year available), divided into three sub-periods, each defined by a major global economic event: 2000–2007 (pre-crisis), 2008–2019 (global financial crisis (GFC) to recovery) and 2020–2022 (COVID).
 
 ### Success criteria
 
@@ -182,12 +183,55 @@ geom_point()
 
 4. Calculate annual growth rate by ((GDP per capita in year 2 minus GDP per capita in year 1) divided by GDP per capita in year 1) multiply by 100 to see clearly the growth trend of each country per year and compare them with the benchmark to answer the research questions, but 2000 has no growth value, so it returns NA and growth series start in 2001.
 
-5. Create and join the table of UK benchmark with main table to keep every row of the main data and then calculate new column relative income by taking each other country’s GDP per capita divide UK’s GDP per capita in the same year and new column absolute gap by taking UK’s GDP per capita minus each country’s GDP per capita in the same year
+5. Create and join the table of UK benchmark with main table to keep every row of the main data and then calculate new column relative income by taking each other country’s GDP per capita divide UK’s GDP per capita in the same year to measure the gap in proportional terms and makes economies of very different sizes comparable on one scale. Calculate new column absolute gap by taking UK’s GDP per capita minus each country’s GDP per capita in the same year to show the gap in real money terms
 
 6. Create a new table and separate the comparison data from the benchmark by removing the UK rows because the UK is the benchmark, its relative income is always 1, and it is not part of the comparison groups, so it would affect the group averages when analyzing
 
-
 ## Modelling and Analysis
+
+The project uses descriptive comparisons (included tables and graphs) to spot the income gap between economies and whether SEA closed their income gap with the UK faster or slower than East Asia. Next, it runs the convergence test to check the general pattern formally. 
+
+### The relative income trends
+
+```{r}
+#| label: fig-relative-income
+#| fig-cap: "Relative income (UK = 1) of Southeast and East Asian economies, 2000–2022"
+#| fig-height: 5
+compare_data |> 
+  ggplot(aes(x = year, y = relative_income, color = country)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  facet_wrap(. ~ group)
+```
+
+```{r}
+#| label: tbl-relative-income-group
+#| tbl-cap: "Relative income (UK = 1) in 2000, 2019 and 2022, and change over time by group"
+relative_income_key_years_by_group |>
+  knitr::kable(digits = 2)
+```
+
+```{r}
+#| label: tbl-relative-income-economies
+#| tbl-cap: "Relative income (UK = 1) in 2000, 2019 and 2022, and change over time by economies"
+relative_income_key_years |>
+  knitr::kable(digits = 2)
+```
+
+Relative income is each economy’s GDP per capita divided by the UK’s in the same year, so a rising value indicates the economy’s GDP per capita grows faster than the UK and closes its income gap. 
+As @fig-relative-income, @tbl-relative-income-group, @tbl-relative-income-economies shows on a group level, from 2000 to 2022, East Asia recorded a higher average relative income change while Southeast Asia was slightly lower. However, most SEA economies still demonstrated a consistent upward trend toward the UK’s GDP per capita, led by Singapore which was  from `r relative_income_value("SGP", relative_income_2000)` to `r relative_income_value("SGP", relative_income_2022)` times the UK level. Viet Nam achieved substantial relative growth, expanding from `r relative_income_value("VNM", relative_income_2000)` in 2000 to `r relative_income_value("VNM", relative_income_2022)` in 2022. By contrast, East Asia witnessed two contrasting patterns with strongest relative performers (Taiwan rising by `r relative_income_value("TWN", change_2000_2022)` and China by `r relative_income_value("CHN", change_2000_2022)`) and weakest relative performers (Japan declining by `r abs(relative_income_value("JPN", change_2000_2022))` and North Korea by `r abs(relative_income_value("PRK", change_2000_2022))`). During COVID period, growth trends diverged within groups: while economies such as Singapore, Viet Nam, Malaysia, Indonesia, Taiwan, and South Korea continued to rise, others, including Myanmar and Hong Kong which experienced slight drops in relative income, possibly pandemic disruptions and political and economic shocks affected these economies more.
+
+### Growth by period
+```{r}
+#| label: fig-growth-by-period
+#| fig-cap: "Average annual growth of real GDP per capita by group and period, 2001–2022"
+ggplot(group_growth_by_period, aes(x = period, y = avg_growth, fill = group)) +
+  geom_col(position = "dodge") +
+```
+
+Average annual growth was calculated for each economy in each period and then averaged within each group. Growth matters because the gap can only close if its growth rate exceeds the Benchmark. 
+Southeast Asia maintained a positive growth over the UK across all three periods.
+
 
 ## Evaluation
 
