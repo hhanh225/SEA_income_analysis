@@ -53,7 +53,7 @@ The project’s scope covers **nine Southeast Asian Countries** (Indonesia, Camb
 
 The analysis will be considered successful if:
 
-- Relative income in 2000, 2019 and 2022 is calculated for each country and shown in comparable charts. Average growth by sub-period is compared between SEA and East Asia.
+- Relative income in 2000, 2019 and 2022 is calculated for each economy and shown in comparable charts. Average growth by sub-period is compared between SEA and East Asia.
 
 - Each question gets a clear yes/no-style answer, with uncertainty stated.
 
@@ -255,23 +255,23 @@ While Viet Nam is catching up in proportional terms, the absolute gap remains wi
 
 ### Results interpreting
 
-The answer to the main question depends on how catch-up is measured.  In growth terms, Southeast Asia (SEA) caught up faster than East Asia, averaging higher GDP per capita growth from 2000 to 2019 (@fig-growth-by-period). However, East Asia achieved a larger average relative income gain (@tbl-relative-income-group). This difference occurs because ratio-point metrics favor richer baselines, enabling high-income East Asian economies to gain more relative points from lower growth rates. Overall, SEA countries' catch-up was faster in growth terms, but this did not translate into a larger average relative income gain.
-Besides, during COVID period, the growth shock was larger in SEA than in East Asia, but relative income still rose slightly across both groups because the UK contracted even more severely (@fig-growth-by-period). 
+The answer to the main question depends on how catch-up is measured. In growth terms, Southeast Asia (SEA) caught up faster than East Asia, averaging higher GDP per capita growth from 2000 to 2019 (@fig-growth-by-period). However, East Asia achieved a larger average relative income gain (@tbl-relative-income-group). This difference occurs because ratio-point metrics favor richer baselines, enabling high-income East Asian economies to gain more ratio points, even with smaller growth advantages over the UK. Overall, SEA countries' catch-up was faster in growth terms, but this did not translate into a larger average relative income gain.
+Besides, during COVID period, the growth shock was larger in SEA than in East Asia, but relative income still rose slightly across both groups because the UK contracted even more severely (@fig-growth-by-period).
 Finally, Viet Nam is closing its gap in relative terms, but the absolute dollar gap expanded. Both trends are clear across the whole period.
 
 ### Success criteria achievement
 
-- Relative income in 2000, 2019 and 2022 is calculated for each country and shown in comparable charts. This criteria is presented in two table included data of each economy, each group @tbl-relative-income-group, @tbl-relative-income-economies and figure @fig-relative-income.
+- Relative income in 2000, 2019 and 2022 is calculated for each country and shown in comparable charts. This criterion is presented in two table included data of each economy, each group @tbl-relative-income-group, @tbl-relative-income-economies and figure @fig-relative-income.
 
-- Average growth by sub-period is compared between SEA and East Asia. This criteria is presented in @fig-growth-by-period
+- Average growth by sub-period is compared between SEA and East Asia. This criterion is presented in @fig-growth-by-period
 
-- Each question gets a clear yes/no-style answer, with uncertainty stated. This criteria is presented with data in modelling and analysis section, and conclusion in evaluation section.
+- Each question gets a clear yes/no-style answer, with uncertainty stated. This criterion is presented with data in modelling and analysis section, and conclusion in evaluation section.
 
-- A non-technical reader can understand the charts and main conclusions. This criteria is presented with structured tables and figures in each section with relevant explanation. 
+- A non-technical reader can understand the charts and main conclusions. This criterion is presented with structured tables and figures in each section with relevant explanation. 
 
-  ### Reliability, limitations and future improvements
+### Reliability, limitations and future improvements
 
-A robustness check recalculated group growth averages without Myanmar and North Korea, two economies flagged in @tbl-quality for less reliable data. 
+A robustness check recalculated group growth averages without Myanmar and North Korea, two economies flagged in Data quality issues section for less reliable data. 
 
 ```{r}
 #| label: tbl-robustness
@@ -280,12 +280,28 @@ robustness_comparison |>
   knitr::kable(digits = 2)
 ```
 
-As @tbl-robustness shows, excluding Myanmar lowers Southeast Asia’s pre-crisis average growth, and raises its 2020-2022 period's average, while excluding North Korea increases East Asia’s growth across all periods. However, the main conclusions remain unchanged, Southeast Asia still grew faster than the UK benchmark in all periods, maintained its higher growth rate than East Asia before 2020, and continued to grow faster than the UK throughout the pandemic.
+As @tbl-robustness shows, excluding Myanmar lowers Southeast Asia’s pre-crisis average growth, and raises its 2020-2022 period's average, while excluding North Korea increases East Asia’s growth across all periods. However, the main conclusions remain unchanged. Southeast Asia still grew faster than the UK benchmark in all periods, maintained its higher growth rate than East Asia before 2020, and continued to grow faster than the UK throughout the pandemic.
 
-The project do not run formal statistical test, so the difference between groups are not tested for significance to see clearly the data pattern's reliability.
+The project does not run a formal statistical test, so the differences between groups are not tested for significance to see clearly the data pattern's reliability.
 
-Due to limited time and resources, this project could not run the  convergence test to examine whether poorer economies grew faster than richer ones. In the future, the project will conduct other modelling such as: convergence and statistical test for checking the credibility of the dataset. Moreover, it will implement more economic growth driver's variables including policy, investment, trade or labour data from other trusted database, to examine and explain more factors affecting the economic growth.
+Due to limited time and resources, this project could not run the  convergence test to examine whether poorer economies grew faster than richer ones. In the future, the project will conduct other modelling such as: convergence and statistical test for checking differences between groups are reliable. Moreover, it will import updated data beyond 2022 and add more economic growth driver's variables including policy, investment, trade or labour data from other trusted database, to examine and explain core factors affecting the economic growth and predict periods for poorer economies to close their absolute and relative gaps.
 
 ## Deployment and Communication
 
+### Key message
 
+Viet Nam is catching up with the UK in proportional terms, with its average income rising from about `r round((relative_income_value("VNM", relative_income_2000))*100)`% to `r round((relative_income_value("VNM", relative_income_2022))*100)`% of the UK’s between 2000 and 2022, although the gap in income per person, measured in comparable (PPP) dollars still widened overall. Across the region, Southeast Asia grew faster than both the UK and East Asia between 2000 and 2019, whereas East Asia gained more relative to the UK because its economies started from higher income levels. However, the COVID pandemic slowed this catch-up process across both regions, especially in Southeast Asian, but it did not reverse the long-term trend.
+
+### Recommendation
+
+Based on the empirical findings, Vietnamese analysts should report both relative income and absolute gaps together in annual monitoring updates to provide a balanced view of economic growth. While comparing against the UK illustrates long-term distance from advanced economies, comparisons within the region show whether Viet Nam is keeping pace with immediate neighbors. Policy briefings should include direct comparisons with economies at slightly higher income levels, such as Thailand, to track regional competitiveness. To inform strategies for Viet Nam's 2045 high-income target (World Bank, 2025), further variables such as capital investment, trade openness and labour productivity should be added to evaluate key economic drivers.
+
+For briefing decision-makers, @fig-vietnam-gap is the most effective single visual, because it directly shows the core contrast of both measures: the upward relative catch-up side by side with the expanding absolute gap. 
+
+REFERENCE:
+
+- Bolt, J. and van Zanden, J.L., 2024. Maddison‐style estimates of the evolution of the world economy: A new 2023 update. Journal of Economic Surveys, 39(2), pp.631-671. Available at: https://doi.org/10.1111/joes.12618 (Accessed: 24 October 2026).
+
+- Myint, U. (2006) 'Myanmar’s GDP growth and investment: lessons from a historical perspective', in Skidmore, M. and Wilson, T. (eds.) Dictatorship, disorder and decline in Myanmar. Canberra: ANU Press, pp. 51–65. Available at: https://www.jstor.org/content/oa_chapter_edited/j.ctt24hf5k.8 (Accessed: 24 October 2026).
+
+- World Bank. 2025. Viet Nam 2045: Breaking Through - Institutions for a High-Income Future. © World Bank. Available at: http://hdl.handle.net/10986/43233 License: CC BY-NC 3.0 IGO.
