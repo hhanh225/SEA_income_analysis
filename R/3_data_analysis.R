@@ -65,3 +65,12 @@ vietnam_gap_value = function(yr, column)
 {vietnam_gap |>
     filter(year == yr) |>
     pull({{ column }})}
+
+# Robustness check: recalculate group growth without the two economies to see whether the group comparison changes
+group_growth_robust = growth_by_period |>
+  filter(!country %in% c("Myanmar", "D.P.R. of Korea")) |>
+  group_by(group, period) |>
+  summarise(avg_growth_robust = mean(avg_growth), .groups = "drop")
+# Join and compare group growth robustness table with original group growth one
+robustness_comparison = group_growth_by_period |>
+  left_join(group_growth_robust, by = c("group", "period"))
