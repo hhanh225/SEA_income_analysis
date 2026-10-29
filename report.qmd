@@ -55,9 +55,7 @@ The analysis will be considered successful if:
 
 - Relative income in 2000, 2019 and 2022 is calculated for each country and shown in comparable charts. Average growth by sub-period is compared between SEA and East Asia.
 
-- The convergence slope is estimated, with its uncertainty reported.
-
-- Each sub-question gets a clear yes/no-style answer, with uncertainty stated.
+- Each question gets a clear yes/no-style answer, with uncertainty stated.
 
 - A non-technical reader can understand the charts and main conclusions.
 
@@ -251,8 +249,43 @@ ggplot(vietnam_gap_long, aes(x = year, y = value)) +
 
 Viet Nam’s relative income rose from `r round(vietnam_gap_value(2000, relative_income), 2)` in 2000 to `r round(vietnam_gap_value(2022, relative_income), 2)` in 2022, meaning it closed part of the income gap in proportional terms. However, in absolute terms, the dollar gap was larger from `r format(round(vietnam_gap_value(2000, absolute_gap)), big.mark = ",")` dollars per person in 2000 to `r format(round(vietnam_gap_value(2022, absolute_gap)), big.mark = ",")` dollars per person in 2022. These two measures can differ because the UK starts from a higher baseline GDP per capita; consequently, even a small growth rate in the UK adds more absolute dollars per person than Viet Nam’s significantly faster percentage growth rate. While the absolute gap fluctuated, the relative measure generally trended upward. During the pandemic, relative income peaked at `r round(vietnam_gap_value(2020, relative_income), 2)` in 2020, before decreasing until 2022, but relative income was still higher in 2022 than in 2019. In contrast, the absolute dollar gap fell to `r format(round(vietnam_gap_value(2020, absolute_gap)), big.mark = ",")` dollars per person in 2020, partly because the UK’s own GDP per capita fell sharply that year, before rebounding toward pre-pandemic levels.
 
-While Viet Nam is catching up in proportional terms, the absolute gap remains wide, highlighting that sustained, long-term rapid growth will still be required to narrow the real dollar distance between the two economies
+While Viet Nam is catching up in proportional terms, the absolute gap remains wide, highlighting that sustained, long-term rapid growth will still be required to narrow the real dollar distance between the two economies.
 
 ## Evaluation
 
+### Results interpreting
+
+The answer to the main question depends on how catch-up is measured.  In growth terms, Southeast Asia (SEA) caught up faster than East Asia, averaging higher GDP per capita growth from 2000 to 2019 (@fig-growth-by-period). However, East Asia achieved a larger average relative income gain (@tbl-relative-income-group). This difference occurs because ratio-point metrics favor richer baselines, enabling high-income East Asian economies to gain more relative points from lower growth rates. Overall, SEA countries' catch-up was faster in growth terms, but this did not translate into a larger average relative income gain.
+Besides, during COVID period, the growth shock was larger in SEA than in East Asia, but relative income still rose slightly across both groups because the UK contracted even more severely (@fig-growth-by-period). 
+Finally, Viet Nam is closing its gap in relative terms, but the absolute dollar gap expanded. Both trends are clear across the whole period.
+
+### Success criteria achievement
+
+- Relative income in 2000, 2019 and 2022 is calculated for each country and shown in comparable charts. This criteria is presented in two table included data of each economy, each group @tbl-relative-income-group, @tbl-relative-income-economies and figure @fig-relative-income.
+
+- Average growth by sub-period is compared between SEA and East Asia. This criteria is presented in @fig-growth-by-period
+
+- Each question gets a clear yes/no-style answer, with uncertainty stated. This criteria is presented with data in modelling and analysis section, and conclusion in evaluation section.
+
+- A non-technical reader can understand the charts and main conclusions. This criteria is presented with structured tables and figures in each section with relevant explanation. 
+
+  ### Reliability, limitations and future improvements
+
+A robustness check recalculated group growth averages without Myanmar and North Korea, two economies flagged in @tbl-quality for less reliable data. 
+
+```{r}
+#| label: tbl-robustness
+#| tbl-cap: "Average annual growth (%) with and without Myanmar and North Korea"
+robustness_comparison |>
+  knitr::kable(digits = 2)
+```
+
+As @tbl-robustness shows, excluding Myanmar lowers Southeast Asia’s pre-crisis average growth, and raises its 2020-2022 period's average, while excluding North Korea increases East Asia’s growth across all periods. However, the main conclusions remain unchanged, Southeast Asia still grew faster than the UK benchmark in all periods, maintained its higher growth rate than East Asia before 2020, and continued to grow faster than the UK throughout the pandemic.
+
+The project do not run formal statistical test, so the difference between groups are not tested for significance to see clearly the data pattern's reliability.
+
+Due to limited time and resources, this project could not run the  convergence test to examine whether poorer economies grew faster than richer ones. In the future, the project will conduct other modelling such as: convergence and statistical test for checking the credibility of the dataset. Moreover, it will implement more economic growth driver's variables including policy, investment, trade or labour data from other trusted database, to examine and explain more factors affecting the economic growth.
+
 ## Deployment and Communication
+
+
