@@ -12,7 +12,8 @@ relative_income_key_years = compare_data |>
   arrange(group, desc(change_2000_2022))
 relative_income_key_years_by_group = relative_income_key_years |> 
   group_by(group) |> 
-  summarise(mean(change_2000_2022), mean(change_2019_2022))
+  summarise(avg_change_2000_2022 = mean(change_2000_2022), 
+            avg_change_2019_2022 = mean(change_2019_2022))
 
 # Look up one value from the relative income table to insert in the qmd file
 relative_income_value = function(code, column) 
@@ -21,23 +22,14 @@ relative_income_value = function(code, column)
     pull({{ column }}) |>
     round(2)}
 
-relative_income_key_years_by_group_value = function(code, column) 
+relative_income_key_years_by_group_value = function(group_name, column) 
 {relative_income_key_years_by_group |>
-    filter(group == code) |>
+    filter(group == group_name) |>
     pull({{ column }}) |>
     round(2)}
 
-# Create line chart which shows each economy's relative income to the UK from 2000 to 2022 to see the trend and whether group closed the gap faster
-compare_data |> 
-  ggplot(aes(x = year, y = relative_income, color = country)) +
-  geom_line() +
-  labs(title = "Chart of relative income for each group over 2000–2022",
-       x = "Year", y = "Relative income (UK = 1)") +
-  geom_hline(yintercept = 1, linetype = "dashed") +
-  facet_wrap(. ~ group)
-
-# Create a table and bar chart which shows each group's annual growth rate to see whether whether each group grew faster than the UK in each period
-# Remove NA data in 2000 because the growth rate start from 2001
+# Create a table and bar chart which shows each group's annual growth rate to see whether each group grew faster than the UK in each period
+# Remove NA data in 2000 because the growth rates start from 2001
 # Calculate average growth rate economy then average growth rate group per period
 growth_by_period = analysis_data |> 
   filter(!is.na(annual_growth_rate)) |> 
@@ -48,11 +40,28 @@ group_growth_by_period = growth_by_period |>
   summarise(avg_growth = mean(avg_growth), .groups = "drop")
 
 # Look up one value from the group growth by period table to insert in the qmd file
-group_growth_by_period_value = function(group_name, period_label) 
+growth_value = function(group_name, period_label) 
 {group_growth_by_period |>
     filter(group == group_name, period == period_label) |>
     pull(avg_growth) |>
     round(2)}
 
-ggplot(group_growth_by_period, aes(x = period, y = avg_growth, fill = group)) +
-  geom_col(position = "dodge")
+# Create a table of Viet Nam's relative income and absolute gap over time to answer sub-question (b)
+vietnam_gap = compare_data |>
+  filter(countrycode == "VNM") |>
+  select(year, relative_income, absolute_gap)
+
+# Reshape both measures into one column so they can be shown as two panels in one chart
+vietnam_gap_long = vietnam_gap |>
+  pivot_longer(cols = c(relative_income, absolute_gap),
+               names_to = "measure",
+               values_to = "value") |>
+  mutate(measure = case_when(
+    measure == "relative_income" ~ "Relative income (UK = 1)",
+    measure == "absolute_gap" ~ "Absolute gap (2011 int. $ per person)"))
+
+# Look up one value from the Viet Nam table to insert in the qmd file
+vietnam_gap_value = function(yr, column)
+{vietnam_gap |>
+    filter(year == yr) |>
+    pull({{ column }})}
