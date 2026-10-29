@@ -34,7 +34,7 @@ The intended stakeholders are Vietnamese economic policy analysts who need evide
 
 ### Research questions
 
-There is one main research question and three sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to my home country, Viet Nam: 
+There is one main research question and two sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to my home country, Viet Nam: 
 **Main question**:
 
 - From 2000 to 2022, did SEA countries close their income gap with the UK faster or slower than East Asian countries?
@@ -44,10 +44,6 @@ There is one main research question and three sub-questions in this project. The
 - Did the COVID-19 shock (especially in 2020) interrupt the catch-up trend, and was the shock larger in SEA or East Asia?
 
 - Is Viet Nam closing its income gap with the UK, both in relative terms (Viet Nam's GDP per capita as a share of the UK's) and in absolute terms (the difference in 2011 international dollars (PPP) per person)?
-
-- If Viet Nam’s growth advantage over the UK during 2000–2019 continued, roughly when would Viet Nam reach Thailand’s 2022 relative income level? since it is ahead of Viet Nam but within reach
-
-A simple convergence test examines whether poorer economies grew faster than richer ones.
 
 ### Scope
 
@@ -189,7 +185,7 @@ geom_point()
 
 ## Modelling and Analysis
 
-The project uses descriptive comparisons (included tables and graphs) to spot the income gap between economies and whether SEA closed their income gap with the UK faster or slower than East Asia. Next, it runs the convergence test to check the general pattern formally. 
+The project uses descriptive comparisons (included tables and graphs) to measure the income gap between economies and whether SEA closed its income gap with the UK faster or slower than East Asia. This method clearly shows real-world trends, growth patterns, and the impact of major events (such as COVID-19). It also use simple group averages, giving equal weight to each country—so that smaller nations like North Korea or Laos are treated fairly and not drowned out by huge economies like China or Singapore.
 
 ### The relative income trends
 
@@ -199,6 +195,7 @@ The project uses descriptive comparisons (included tables and graphs) to spot th
 #| fig-height: 5
 compare_data |> 
   ggplot(aes(x = year, y = relative_income, color = country)) +
+  labs(x = "Year", y = "Relative income (UK = 1)", colour = "Economy") +
   geom_line() +
   geom_hline(yintercept = 1, linetype = "dashed") +
   facet_wrap(. ~ group)
@@ -213,24 +210,31 @@ relative_income_key_years_by_group |>
 
 ```{r}
 #| label: tbl-relative-income-economies
-#| tbl-cap: "Relative income (UK = 1) in 2000, 2019 and 2022, and change over time by economies"
+#| tbl-cap: "Relative income (UK = 1) in 2000, 2019 and 2022, and change over time by economy"
 relative_income_key_years |>
   knitr::kable(digits = 2)
 ```
 
 Relative income is each economy’s GDP per capita divided by the UK’s in the same year, so a rising value indicates the economy’s GDP per capita grows faster than the UK and closes its income gap. 
-As @fig-relative-income, @tbl-relative-income-group, @tbl-relative-income-economies shows on a group level, from 2000 to 2022, East Asia recorded a higher average relative income change while Southeast Asia was slightly lower. However, most SEA economies still demonstrated a consistent upward trend toward the UK’s GDP per capita, led by Singapore which was  from `r relative_income_value("SGP", relative_income_2000)` to `r relative_income_value("SGP", relative_income_2022)` times the UK level. Viet Nam achieved substantial relative growth, expanding from `r relative_income_value("VNM", relative_income_2000)` in 2000 to `r relative_income_value("VNM", relative_income_2022)` in 2022. By contrast, East Asia witnessed two contrasting patterns with strongest relative performers (Taiwan rising by `r relative_income_value("TWN", change_2000_2022)` and China by `r relative_income_value("CHN", change_2000_2022)`) and weakest relative performers (Japan declining by `r abs(relative_income_value("JPN", change_2000_2022))` and North Korea by `r abs(relative_income_value("PRK", change_2000_2022))`). During COVID period, growth trends diverged within groups: while economies such as Singapore, Viet Nam, Malaysia, Indonesia, Taiwan, and South Korea continued to rise, others, including Myanmar and Hong Kong which experienced slight drops in relative income, possibly pandemic disruptions and political and economic shocks affected these economies more.
+As @fig-relative-income, @tbl-relative-income-group, @tbl-relative-income-economies show on a group level, from 2000 to 2022, East Asia recorded a higher average relative income change while Southeast Asia was slightly lower. However, most SEA economies still demonstrated a consistent upward trend toward the UK’s GDP per capita, led by Singapore which rose from `r relative_income_value("SGP", relative_income_2000)` to `r relative_income_value("SGP", relative_income_2022)` times the UK level. Viet Nam achieved substantial relative growth, expanding from `r relative_income_value("VNM", relative_income_2000)` in 2000 to `r relative_income_value("VNM", relative_income_2022)` in 2022. By contrast, East Asia witnessed two contrasting patterns with strongest relative performers (Taiwan rising by `r relative_income_value("TWN", change_2000_2022)` and China by `r relative_income_value("CHN", change_2000_2022)`) and weakest relative performers (Japan declining by `r abs(relative_income_value("JPN", change_2000_2022))` and North Korea by `r abs(relative_income_value("PRK", change_2000_2022))`). 
+
+During the COVID period, on average relative income rose slightly by `r relative_income_key_years_by_group_value("Southeast Asia", avg_change_2019_2022)` in Southeast Asia and `r relative_income_key_years_by_group_value("East Asia", avg_change_2019_2022)` in East Asia between 2019 and 2022 suggesting that catch-up continued, but more slowly especially in SEA, possibly partly because the UK’s own GDP per capita also fell sharply in 2020, so economies that fell less than the UK gained relative income. However, the pattern varied within groups: while economies such as Singapore, Viet Nam, Malaysia, Indonesia, Taiwan, and South Korea continued to rise, others, including Myanmar and Hong Kong, experienced slight drops in relative income, possibly because pandemic disruptions and political shocks affected these economies more.
 
 ### Growth by period
 ```{r}
 #| label: fig-growth-by-period
 #| fig-cap: "Average annual growth of real GDP per capita by group and period, 2001–2022"
 ggplot(group_growth_by_period, aes(x = period, y = avg_growth, fill = group)) +
-  geom_col(position = "dodge") +
+  labs(x = "Period", y = "Average annual growth of real GDP per capita (%)", fill = "Group") +
+  geom_hline(yintercept = 0) +
+  geom_col(position = "dodge")
 ```
 
-Average annual growth was calculated for each economy in each period and then averaged within each group. Growth matters because the gap can only close if its growth rate exceeds the Benchmark. 
-Southeast Asia maintained a positive growth over the UK across all three periods.
+Average annual growth was calculated for each economy in each period and then averaged within each group. Growth matters because the gap can only close if an economy grows faster than the UK. 
+As @fig-growth-by-period shows, Southeast Asia grew faster than the UK across all three periods. This is consistent with the relative income trends in @fig-relative-income. Southeast Asia's consistent growth over the UK (`r growth_value("Southeast Asia", "2000-2007 Pre-crisis") - growth_value("Benchmark", "2000-2007 Pre-crisis")`; `r growth_value("Southeast Asia", "2008-2019 GFC and recovery") - growth_value("Benchmark", "2008-2019 GFC and recovery")`; `r growth_value("Southeast Asia", "2020-2022 COVID") - growth_value("Benchmark", "2020-2022 COVID")` percentage points over three respective periods) is consistent with the rise in its relative income from 2000 to 2022.
+Compared to East Asia, SEA grew faster in the first two periods, especially after the GFC when its average growth of `r growth_value("Southeast Asia", "2008-2019 GFC and recovery")`% was nearly double East Asia's `r growth_value("East Asia", "2008-2019 GFC and recovery")` post-GFC growth rate. During the pandemic, Southeast Asia’s average annual growth dropped significantly to `r growth_value("Southeast Asia", "2020-2022 COVID")`%, below East Asia’s (`r growth_value("East Asia", "2020-2022 COVID")`%), so the COVID shock was larger in Southeast Asia.
+
+Several caveats apply to both the relative income and growth results. First, changes in relative income (@fig-relative-income) are measured in ratio points, meaning richer economies with higher baseline levels (Taiwan, South Korea) gained larger absolute ratio points than low-income economies from equivalent percentage growth rates. This explains why East Asia shows a larger average relative income gain despite Southeast Asia achieving faster average GDP per capita growth. Besides, group growth averages combine economies with very different growth so the group result may not represent every economy in it, such as fast-growing China versus slow-growing North Korea in East Asia. As noted in @tbl-quality, official growth data for Myanmar during 2003-2006 may be overstated, inflating Southeast Asia’s pre-crisis growth average and subsequent relative income levels. In addition, the COVID-period average is based on only three growth years, so a single year, such as the 2020 fall or the following rebound, strongly affects the average.
 
 
 ## Evaluation

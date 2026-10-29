@@ -12,12 +12,18 @@ relative_income_key_years = compare_data |>
   arrange(group, desc(change_2000_2022))
 relative_income_key_years_by_group = relative_income_key_years |> 
   group_by(group) |> 
-  summarise(mean(change_2000_2022))
+  summarise(mean(change_2000_2022), mean(change_2019_2022))
 
 # Look up one value from the relative income table to insert in the qmd file
 relative_income_value = function(code, column) 
   {relative_income_key_years |>
     filter(countrycode == code) |>
+    pull({{ column }}) |>
+    round(2)}
+
+relative_income_key_years_by_group_value = function(code, column) 
+{relative_income_key_years_by_group |>
+    filter(group == code) |>
     pull({{ column }}) |>
     round(2)}
 
@@ -30,7 +36,7 @@ compare_data |>
   geom_hline(yintercept = 1, linetype = "dashed") +
   facet_wrap(. ~ group)
 
-# Create a table which shows each group's annual growth rate to see whether whether each group grew faster than the UK in each period
+# Create a table and bar chart which shows each group's annual growth rate to see whether whether each group grew faster than the UK in each period
 # Remove NA data in 2000 because the growth rate start from 2001
 # Calculate average growth rate economy then average growth rate group per period
 growth_by_period = analysis_data |> 
@@ -40,6 +46,13 @@ growth_by_period = analysis_data |>
 group_growth_by_period = growth_by_period |>
   group_by(group, period) |> 
   summarise(avg_growth = mean(avg_growth), .groups = "drop")
+
+# Look up one value from the group growth by period table to insert in the qmd file
+group_growth_by_period_value = function(group_name, period_label) 
+{group_growth_by_period |>
+    filter(group == group_name, period == period_label) |>
+    pull(avg_growth) |>
+    round(2)}
 
 ggplot(group_growth_by_period, aes(x = period, y = avg_growth, fill = group)) +
   geom_col(position = "dodge")
