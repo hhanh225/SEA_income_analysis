@@ -41,7 +41,9 @@ The intended stakeholders are Vietnamese economic policy analysts who need evide
 
 ### Research questions
 
-There is one main research question and two sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to author's home country, Viet Nam: **Main question**:
+There is one main research question and two sub-questions in this project. These questions will guide the analysis, moving from the regional level, to a major economic shock, to author's home country, Viet Nam:
+
+**Main question**:
 
 - From 2000 to 2022, did SEA countries close their income gap with the UK faster or slower than East Asian countries?
 
@@ -99,20 +101,14 @@ The project uses column “country code” to define the included country object
 
 ```{r}
 #| label: tbl-economies 
-#| tbl-cap: "List studied economies” with their country code"
-study_data |>
-  distinct(countrycode, country) |>
-  mutate(group = case_when(
-    countrycode %in% sea_codes ~ "Southeast Asia",
-    countrycode %in% east_asia_codes ~ "East Asia",
-    countrycode == benchmark_code ~ "Benchmark",
-    .default = "Unassigned"))|>
+#| tbl-cap: "Studied economies” with their country code"
+analysis_data |>
+  distinct(group, countrycode, country) |>
   arrange(group, country) |>
-  select(group, countrycode, country)|>
-  knitr::kable(digits = 1) 
+  knitr::kable(col.names = c("Group", "Country code", "Economy"))
 ```
 
-The analysis includes `r length(sea_codes)` Southeast Asian economies, missing Brunei and Timor-Leste; `r length(east_asia_codes)` East Asia economies, missing Mongolia, Macau. According to the Maddison paper, economic historians have historically prioritized larger or more diversified national economies for long-term reconstruction. Small or newly established territories (such as Timor-Leste gaining independence from Indonesia in 2002) lack national accounts continuously recorded over a long historical horizon.
+The analysis includes `r length(sea_codes)` Southeast Asian economies, missing Brunei and Timor-Leste; `r length(east_asia_codes)` East Asia economies, missing Mongolia, Macau in the data set.
 
 There are complete data of `r length(study_countries)` observed countries in `r n_distinct(study_data$year)` years (from 2000 to 2022), no missing value found in variable GDPpc and population:
 
@@ -121,15 +117,13 @@ Next, it explores whether there were unusually large year-on-year changes in GDP
 ```{r}
 #| label: tbl-largest-changes 
 #| tbl-cap: "Ten largest year-on-year changes in GDP per capita, 2001–2022" 
-study_data |>
-  group_by(country) |>
-  arrange(year, .by_group = TRUE) |>
-  mutate(gdppc_change = (gdppc / lag(gdppc) - 1) * 100) |>
-  ungroup() |>
-  arrange(desc(abs(gdppc_change))) |>
-  select(country, year, gdppc, gdppc_change) |>
-  head(10)|>
-  knitr::kable(digits = 1) 
+analysis_data |>
+  filter(!is.na(annual_growth_rate)) |>
+  arrange(desc(abs(annual_growth_rate))) |>
+  select(country, year, gdppc, annual_growth_rate) |>
+  head(10) |>
+  knitr::kable(digits = 1,
+               col.names = c("Economy", "Year", "GDP per capita (2011 int. $)", "Year-on-year change (%)"))
 ```
 
 Plot the change of gdppc of Laos and Myanmar to see clearly unexpected change:
@@ -144,7 +138,7 @@ study_data |>
   geom_point()
 ```
 
-Laos witnessed a smooth upward trend from 2000 to 2006, then suddenly dropped in 2006 then recovered greatly in 2007. By contrast, Myanmar’s GDP per capita rose significantly from 2003 to 2007 and then growth slowed from 2007 to 2020, finally dropping down considerably from 2020 to 2021 due to the 2021 military coup and COVID-19.
+Laos witnessed a smooth upward trend from 2000 to 2006, then suddenly dropped in 2006 then recovered greatly in 2007. By contrast, Myanmar’s GDP per capita rose significantly from 2003 to 2007 and then growth slowed from 2007 to 2020, finally dropping down considerably from 2020 to 2021 because of the 2021 military coup and COVID-19.
 
 ### Data quality issues
 
@@ -181,7 +175,7 @@ Laos witnessed a smooth upward trend from 2000 to 2006, then suddenly dropped in
 
 ## Modelling and Analysis
 
-The project uses descriptive comparisons (included tables and graphs) to measure the income gap between economies and whether SEA closed its income gap with the UK faster or slower than East Asia. This method clearly shows real-world trends, growth patterns, and the impact of major events (such as COVID-19). It also use simple group averages, giving equal weight to each country—so that smaller nations like North Korea or Laos are treated fairly and not drowned out by huge economies.
+The project uses descriptive comparisons (included tables and graphs) to measure the income gap between economies and whether SEA closed its income gap with the UK faster or slower than East Asia. This method clearly shows real-world trends, growth patterns, and the impact of major events (such as COVID-19). It also uses simple group averages, giving equal weight to each country—so that smaller nations like North Korea or Laos are treated fairly and not drowned out by huge economies.
 
 ### The relative income trends
 
@@ -231,7 +225,7 @@ ggplot(group_growth_by_period, aes(x = period, y = avg_growth, fill = group)) +
 
 Average annual growth was calculated for each economy in each period and then averaged within each group. Growth matters because the gap can only close if an economy grows faster than the UK. As @fig-growth-by-period shows, Southeast Asia grew faster than the UK across all three periods. This is consistent with the relative income trends in @fig-relative-income. Southeast Asia's consistent growth over the UK (`r growth_value("Southeast Asia", "2000-2007 Pre-crisis") - growth_value("Benchmark", "2000-2007 Pre-crisis")`; `r growth_value("Southeast Asia", "2008-2019 GFC and recovery") - growth_value("Benchmark", "2008-2019 GFC and recovery")`; `r growth_value("Southeast Asia", "2020-2022 COVID") - growth_value("Benchmark", "2020-2022 COVID")` percentage points over three respective periods) is consistent with the rise in its relative income from 2000 to 2022. Compared to East Asia, SEA grew faster in the first two periods, especially after the GFC when its average growth of `r growth_value("Southeast Asia", "2008-2019 GFC and recovery")`% was nearly double East Asia's `r growth_value("East Asia", "2008-2019 GFC and recovery")`% post-GFC growth rate. During the pandemic, Southeast Asia’s average annual growth dropped significantly to `r growth_value("Southeast Asia", "2020-2022 COVID")`%, below East Asia’s (`r growth_value("East Asia", "2020-2022 COVID")`%), so the COVID shock was larger in Southeast Asia.
 
-Several caveats apply to both the relative income and growth results. First, changes in relative income (@fig-relative-income) are measured in ratio points, meaning richer economies with higher baseline levels (Taiwan, South Korea) gained larger absolute ratio points than low-income economies from equivalent percentage growth rates. This explains why East Asia shows a larger average relative income gain despite Southeast Asia achieving faster average GDP per capita growth. Besides, group growth averages combine economies with different growth so the group result may not represent every economy in it, such as fast-growing China versus slow-growing North Korea in East Asia. As noted in Data quality issues section, official growth data for Myanmar during 2003-2006 may be overstated, inflating Southeast Asia’s pre-crisis growth average and subsequent relative income levels. In addition, the COVID-period average is based on only three growth years, so a single year, such as the 2020 fall or the following rebound, strongly affects the average.
+Several caveats apply to both the relative income and growth results. First, changes in relative income (@fig-relative-income) are measured in ratio points, meaning richer economies with higher baseline levels (Taiwan, South Korea) gained larger absolute ratio points than low-income economies from equivalent percentage growth rates. This may explains why East Asia shows a larger average relative income gain despite Southeast Asia achieving faster average GDP per capita growth. Besides, group growth averages combine economies with different growth so the group result may not represent every economy in it, such as fast-growing China versus slow-growing North Korea in East Asia. As noted in Data quality issues section, official growth data for Myanmar during 2003-2006 may be overstated, inflating Southeast Asia’s pre-crisis growth average and subsequent relative income levels. In addition, the COVID-period average is based on only three growth years, so a single year, such as the 2020 fall or the following rebound, strongly affects the average.
 
 ### Viet Nam: relative and absolute gaps
 
@@ -254,7 +248,7 @@ While Viet Nam is catching up in proportional terms, the absolute gap remains wi
 
 ### Results interpreting
 
-The answer to the main question depends on how catch-up is measured. In growth terms, Southeast Asia (SEA) caught up faster than East Asia, averaging higher GDP per capita growth from 2000 to 2019 (@fig-growth-by-period). However, East Asia achieved a larger average relative income gain (@tbl-relative-income-group). But this did not translate into a larger average relative income gain. Besides, during COVID period, the growth shock was larger in SEA than in East Asia, but relative income still rose slightly across both groups because the UK contracted even more severely (@fig-growth-by-period). Finally, Viet Nam is closing its gap in relative terms, but the absolute dollar gap expanded. Both trends are clear across the whole period.
+The answer to the main question depends on how catch-up is measured. In growth terms, Southeast Asia (SEA) caught up faster than East Asia, averaging higher GDP per capita growth from 2000 to 2019 (@fig-growth-by-period). However, East Asia achieved a larger average relative income gain (@tbl-relative-income-group). Besides, during COVID period, the growth shock was larger in SEA than in East Asia, but relative income still rose slightly across both groups because the UK contracted even more severely (@fig-growth-by-period). Finally, Viet Nam is closing its gap in relative terms, but the absolute dollar gap expanded. Both trends are clear across the whole period.
 
 ### Success criteria achievement
 

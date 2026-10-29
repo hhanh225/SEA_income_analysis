@@ -28,7 +28,7 @@ relative_income_key_years_by_group_value = function(group_name, column)
     pull({{ column }}) |>
     round(2)}
 
-# Create a table and bar chart which shows each group's annual growth rate to see whether each group grew faster than the UK in each period
+# Create a table which shows each group's annual growth rate to see whether each group grew faster than the UK in each period
 # Remove NA data in 2000 because the growth rates start from 2001
 # Calculate average growth rate economy then average growth rate group per period
 growth_by_period = analysis_data |> 

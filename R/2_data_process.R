@@ -6,7 +6,8 @@ sea_codes = c("IDN", "KHM", "LAO", "MMR", "MYS", "PHL", "SGP", "THA", "VNM")
 east_asia_codes = c("CHN", "HKG", "JPN", "KOR", "PRK", "TWN")
 benchmark_code = "GBR"
 study_countries = c(sea_codes, east_asia_codes, benchmark_code) 
-study_data = raw_maddison |> filter(countrycode %in% study_countries, year >= 2000 & year <= 2022)
+study_data = raw_maddison |> filter(countrycode %in% study_countries, 
+                                    year >= 2000 & year <= 2022)
 
 # Create analysis data, assign each country and year to defined groups and periods and remove the region column because it does not show exactly the defined group of countries in the project
 analysis_data = study_data |>
