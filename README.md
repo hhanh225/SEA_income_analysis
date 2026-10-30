@@ -37,10 +37,10 @@ install.packages(c("tidyverse", "readxl", "knitr"))
 ```
 
 **Steps**
-
-1. Open `SEA_income_analysis.Rproj` in RStudio, so all file paths work.
-2. Open `report.qmd`.
-3. Click **Render** and **setup chunk**. The report runs all three scripts in `R/` automatically
+1. Extract (unzip) the project folder first. Opening files directly inside the zip will not work.
+2. Open `SEA_income_analysis.Rproj` in RStudio, so all file paths work.
+3. Open `report.qmd`.
+4. Click **Render** and **setup chunk**. The report runs all three scripts in `R/` automatically
    and produces `report.html`.
 
 **Optional**: To explore the analysis step by step, run the
